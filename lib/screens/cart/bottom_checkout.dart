@@ -34,7 +34,6 @@ class Cartbottomsheetwidget extends StatelessWidget {
               Spacer(),
               ElevatedButton(
                 onPressed: () {},
-                child: Text("Checkout"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
@@ -42,6 +41,7 @@ class Cartbottomsheetwidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
+                child: Text("Checkout"),
               ),
             ],
           ),

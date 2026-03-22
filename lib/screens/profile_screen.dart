@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
+import 'package:shopsmart_users/screens/auth/login.dart';
+import 'package:shopsmart_users/screens/inner_screen.dart/orders/orders_screen.dart';
+import 'package:shopsmart_users/screens/inner_screen.dart/viewed_recently.dart';
+import 'package:shopsmart_users/screens/inner_screen.dart/wishlist.dart';
 import 'package:shopsmart_users/services/assets_manger.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/appnametextwidget.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
 import '../providers/theme_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({super.key});
+  const ProfileScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -46,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Theme.of(context).cardColor,
                       border: Border.all(
-                          color: Theme.of(context).colorScheme.background,
+                          color: Theme.of(context).colorScheme.surface,
                           width: 3),
                       image: DecorationImage(
                         image: (NetworkImage(
@@ -88,17 +93,23 @@ class ProfileScreen extends StatelessWidget {
                 Listtilewidget(
                   image: AssetsManager.ordersvg,
                   title: "All orders",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, OrdersScreen.routName);
+                  },
                 ),
                 Listtilewidget(
                   image: AssetsManager.wishlist,
                   title: "Wishlist",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, Wishlist.routName);
+                  },
                 ),
                 Listtilewidget(
                   image: AssetsManager.recent,
                   title: "Viewed recently",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, ViewedRecently.routName);
+                  },
                 ),
                 Listtilewidget(
                   image: AssetsManager.adresse,
@@ -152,7 +163,15 @@ class ProfileScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                MyAppFunctions.showErrorOrWarningDialog(
+                    context: context,
+                    fct: () {
+                      Navigator.pushNamed(context, LoginScreen.routName);
+                    },
+                    title: "Are you sure you want sign out",
+                    isError: false);
+              },
               label: Text(
                 "Logout",
                 style: TextStyle(color: Colors.white),

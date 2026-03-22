@@ -9,7 +9,7 @@ import 'package:shopsmart_users/widgets/products/latest_arrival.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

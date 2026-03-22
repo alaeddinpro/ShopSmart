@@ -6,7 +6,7 @@ class AssetsManager {
   static String catpath = "assets/images/categories";
 
   //image_file
-  static String forgetpasswordimage = "$imagepath/forgot_password.png";
+  static String forgetpasswordimage = "$imagepath/forgot_password.jpg";
   static String maprounded = "$imagepath/rounded_map.png";
   static String warning = "$imagepath/warning.png";
   static String error = "$imagepath/error.png";
@@ -21,10 +21,10 @@ class AssetsManager {
   static String recent = "$profileimagepath/recent.png";
   static String theme = "$profileimagepath/theme.png";
   //Bag_file
-  static String bagwish = "$bagpath/bagwsh.png";
+  static String bagwish = "$bagpath/bag_wish.png";
   static String shoppingbasket = "$bagpath/shopping_basket.png";
   static String shoppingcart = "$bagpath/shopping_cart.png";
-  static String orderbag = "$bagpath/order_bag.png";
+  static String orderbag = "$bagpath/order.png";
   static String ordersvg = "$bagpath/order_svg.png";
   static String wishlist = "$bagpath/wishlist_svg.png";
   //Banner_file

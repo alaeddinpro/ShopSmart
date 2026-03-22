@@ -1,22 +1,26 @@
+import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:shopsmart_users/screens/cart/bottom_checkout.dart';
 import 'package:shopsmart_users/screens/cart/cart_widget.dart';
 import 'package:shopsmart_users/services/assets_manger.dart';
+import 'package:shopsmart_users/widgets/products/product_widget.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
 import '../../widgets/empty_bag.dart';
 
-class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
-  final bool isBagEmpty = false;
+class ViewedRecently extends StatelessWidget {
+  const ViewedRecently({super.key});
+  static const routName = "/ViewedRecentlyScreen";
+
+  final bool isBagEmpty = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: isBagEmpty
           ? EmptyBag(
-              imagePath: AssetsManager.shoppingbasket,
-              title: "Your cart is empty",
+              imagePath: AssetsManager.orderbag,
+              title: "No viewed product yet!",
               subtitle:
                   "Looks like you haven't added anything to your cart yet",
               buttonText: "Shop Now",
@@ -28,7 +32,7 @@ class CartScreen extends StatelessWidget {
                   child: Image.asset(AssetsManager.shoppingcart),
                 ),
                 title: SubtitleText(
-                  label: "Cart",
+                  label: "Viewed Recently (6)",
                   size: 24,
                   weight: FontWeight.bold,
                 ),
@@ -41,13 +45,17 @@ class CartScreen extends StatelessWidget {
                       ))
                 ],
               ),
-              body: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return CartWidget();
+              body: DynamicHeightGridView(
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                builder: (context, index) {
+                  return ProductWidget(
+                    productId: "",
+                  );
                 },
+                itemCount: 100,
+                crossAxisCount: 2,
               ),
-              bottomNavigationBar: Cartbottomsheetwidget(),
             ),
     );
   }

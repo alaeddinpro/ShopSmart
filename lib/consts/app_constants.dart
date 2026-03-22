@@ -15,8 +15,8 @@ class AppConstants {
     Categoris_Model(
         id: "3", image: AssetsManager.electronics, name: "Electronics"),
     Categoris_Model(id: "4", image: AssetsManager.fashion, name: "Fashion"),
-    Categoris_Model(id: "5", image: AssetsManager.mobiles, name: "Mobiles"),
-    Categoris_Model(id: "6", image: AssetsManager.pc, name: "Pc"),
+    Categoris_Model(id: "5", image: AssetsManager.mobiles, name: "Phones"),
+    Categoris_Model(id: "6", image: AssetsManager.pc, name: "Laptops"),
     Categoris_Model(id: "7", image: AssetsManager.shoes, name: "Shoes"),
     Categoris_Model(id: "8", image: AssetsManager.watch, name: "Watches"),
   ];

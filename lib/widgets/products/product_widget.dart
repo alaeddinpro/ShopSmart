@@ -1,12 +1,17 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_constants.dart';
+import 'package:shopsmart_users/models/products_model..dart';
+import 'package:shopsmart_users/screens/inner_screen.dart/product_details.dart';
+import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
-class ProductWidget extends StatefulWidget {
-  const ProductWidget({super.key});
+import '../../providers/products_provider.dart';
 
+class ProductWidget extends StatefulWidget {
+  const ProductWidget({super.key, required this.productId});
+  final String productId;
   @override
   State<ProductWidget> createState() => _ProductWidgetState();
 }
@@ -14,66 +19,72 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
+    // final productsModelProvider = Provider.of<ProductsModel>(context);
+    final productsProvider = Provider.of<ProductsProvider>(context);
+    final getCurrentProduct = productsProvider.findById(widget.productId);
     Size size = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {},
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: FancyShimmerImage(
-                imageUrl: AppConstants.ImageUrl,
-                height: size.height * 0.22,
-                width: double.infinity,
+    return getCurrentProduct == null
+        ? SizedBox.shrink()
+        : Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, ProductDetails.routName,
+                    arguments: getCurrentProduct.productId);
+              },
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: FancyShimmerImage(
+                      imageUrl: getCurrentProduct.productImage,
+                      height: size.height * 0.22,
+                      width: double.infinity,
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Flexible(
+                        flex: 3,
+                        child: SubtitleText(
+                          label: getCurrentProduct.productTitle,
+                          maxLines: 2,
+                        ),
+                      ),
+                      Flexible(child: HeartBtn())
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SubtitleText(
+                        label: getCurrentProduct.productPrice,
+                        weight: FontWeight.w600,
+                      ),
+                      Material(
+                        color: Colors.lightBlueAccent,
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        child: InkWell(
+                            onTap: () {},
+                            splashColor: Colors.blueAccent,
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Icon(
+                                Icons.add_shopping_cart_outlined,
+                                color: Colors.white,
+                              ),
+                            )),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 6,
+                  )
+                ],
               ),
             ),
-            SizedBox(height: 6),
-            Row(
-              children: [
-                Flexible(
-                  flex: 3,
-                  child: SubtitleText(
-                    label: "Product Name",
-                    maxLines: 2,
-                  ),
-                ),
-                Flexible(
-                    child: IconButton(
-                        onPressed: () {}, icon: Icon(IconlyLight.heart)))
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SubtitleText(
-                  label: "100.00\$",
-                  weight: FontWeight.w600,
-                ),
-                Material(
-                  color: Colors.lightBlueAccent,
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  child: InkWell(
-                      onTap: () {},
-                      splashColor: Colors.blueAccent,
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Icon(
-                          Icons.add_shopping_cart_outlined,
-                          color: Colors.white,
-                        ),
-                      )),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 6,
-            )
-          ],
-        ),
-      ),
-    );
+          );
   }
 }

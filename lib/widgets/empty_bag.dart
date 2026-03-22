@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shopsmart_users/services/assets_manger.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
 class EmptyBag extends StatelessWidget {
@@ -7,7 +6,7 @@ class EmptyBag extends StatelessWidget {
   final String title;
   final String subtitle;
   final String buttonText;
-  EmptyBag(
+  const EmptyBag(
       {super.key,
       required this.imagePath,
       required this.title,
@@ -40,16 +39,16 @@ class EmptyBag extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {},
-            child: Text(
-              buttonText,
-              style: TextStyle(color: Colors.white),
-            ),
             style: ElevatedButton.styleFrom(
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8)),
                 backgroundColor: Colors.blue,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16)),
+            child: Text(
+              buttonText,
+              style: TextStyle(color: Colors.white),
+            ),
           )
         ],
       ),
