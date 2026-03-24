@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_constants.dart';
 import 'package:shopsmart_users/models/products_model..dart';
+import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
 import 'package:shopsmart_users/widgets/appnametextwidget.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
@@ -21,6 +22,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     // final productsModelProvider = Provider.of<ProductsModel>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
     final productsProvider = Provider.of<ProductsProvider>(context);
     String? productId = ModalRoute.of(context)!.settings.arguments as String?;
     final getCurrentProduct = productsProvider.findById(productId!);
@@ -83,6 +85,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         children: [
                           HeartBtn(
                             backgroundcolor: Colors.blue.shade200,
+                            productId: getCurrentProduct.productId,
                           ),
                           SizedBox(
                             width: 16,
@@ -92,9 +95,29 @@ class _ProductDetailsState extends State<ProductDetails> {
                             child: ElevatedButton.icon(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red),
-                              onPressed: () {},
-                              label: Text("Item added to cart"),
-                              icon: Icon(Icons.done_all),
+                              onPressed: () {
+                                if (cartProvider.isProductinCart(
+                                    productId: getCurrentProduct.productId)) {
+                                  return;
+                                }
+
+                                cartProvider.addProductToCart(
+                                    productId: getCurrentProduct.productId);
+                              },
+                              label: Text(
+                                cartProvider.isProductinCart(
+                                        productId: getCurrentProduct.productId)
+                                    ? "Item it added"
+                                    : "Item added to cart",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              icon: Icon(
+                                cartProvider.isProductinCart(
+                                        productId: getCurrentProduct.productId)
+                                    ? Icons.done_all
+                                    : Icons.add_shopping_cart_outlined,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ],

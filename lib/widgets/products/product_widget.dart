@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_constants.dart';
 import 'package:shopsmart_users/models/products_model..dart';
+import 'package:shopsmart_users/providers/viewed_provider.dart';
 import 'package:shopsmart_users/screens/inner_screen.dart/product_details.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
+import '../../providers/cart_provider.dart';
 import '../../providers/products_provider.dart';
 
 class ProductWidget extends StatefulWidget {
@@ -19,9 +21,10 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
-    // final productsModelProvider = Provider.of<ProductsModel>(context);
     final productsProvider = Provider.of<ProductsProvider>(context);
     final getCurrentProduct = productsProvider.findById(widget.productId);
+    final cartProvider = Provider.of<CartProvider>(context);
+    final viewedProvider = Provider.of<ViewedProvider>(context, listen: false);
     Size size = MediaQuery.of(context).size;
     return getCurrentProduct == null
         ? SizedBox.shrink()
@@ -29,6 +32,9 @@ class _ProductWidgetState extends State<ProductWidget> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
+                viewedProvider.addviewedProduct(
+                    productId: getCurrentProduct.productId);
+
                 Navigator.pushNamed(context, ProductDetails.routName,
                     arguments: getCurrentProduct.productId);
               },
@@ -52,7 +58,10 @@ class _ProductWidgetState extends State<ProductWidget> {
                           maxLines: 2,
                         ),
                       ),
-                      Flexible(child: HeartBtn())
+                      Flexible(
+                          child: HeartBtn(
+                        productId: getCurrentProduct.productId,
+                      ))
                     ],
                   ),
                   Row(
@@ -66,13 +75,24 @@ class _ProductWidgetState extends State<ProductWidget> {
                         color: Colors.lightBlueAccent,
                         borderRadius: BorderRadius.all(Radius.circular(12)),
                         child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              if (cartProvider.isProductinCart(
+                                  productId: getCurrentProduct.productId)) {
+                                return;
+                              }
+
+                              cartProvider.addProductToCart(
+                                  productId: getCurrentProduct.productId);
+                            },
                             splashColor: Colors.blueAccent,
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                             child: Padding(
                               padding: const EdgeInsets.all(6.0),
                               child: Icon(
-                                Icons.add_shopping_cart_outlined,
+                                cartProvider.isProductinCart(
+                                        productId: getCurrentProduct.productId)
+                                    ? Icons.check
+                                    : Icons.add_shopping_cart_outlined,
                                 color: Colors.white,
                               ),
                             )),

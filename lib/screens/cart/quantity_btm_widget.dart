@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopsmart_users/models/cart_model.dart';
+import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
 class QuantityBtmSheetWidget extends StatelessWidget {
-  const QuantityBtmSheetWidget({super.key});
-
+  const QuantityBtmSheetWidget({super.key, required this.cartModel});
+  final CartModel cartModel;
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
     return Column(
       children: [
         SizedBox(
@@ -30,7 +34,9 @@ class QuantityBtmSheetWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    print("index: $index");
+                    cartProvider.updateQty(
+                        productId: cartModel.productId, quantity: index + 1);
+                    Navigator.pop(context);
                   },
                   child: Center(
                     child: Padding(

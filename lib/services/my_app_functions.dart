@@ -35,7 +35,7 @@ class MyAppFunctions {
                   height: 16,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Visibility(
                       visible: !isError,
@@ -51,6 +51,7 @@ class MyAppFunctions {
                     TextButton(
                         onPressed: () {
                           fct();
+                          Navigator.pop(context);
                         },
                         child: SubtitleText(
                           label: "OK",

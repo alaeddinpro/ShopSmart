@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
+
+import '../../providers/cart_provider.dart';
+import '../../providers/products_provider.dart';
 
 class Cartbottomsheetwidget extends StatelessWidget {
   const Cartbottomsheetwidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final productsProvider = Provider.of<ProductsProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -22,10 +28,13 @@ class Cartbottomsheetwidget extends StatelessWidget {
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  SubtitleText(label: "Total(6 products/9 items)"),
+                children: [
                   SubtitleText(
-                    label: "100.00\$",
+                      label:
+                          "Total(${cartProvider.getCartItems.length} products/${cartProvider.getQuantity()} items)"),
+                  SubtitleText(
+                    label:
+                        "${cartProvider.getTotalPrice(productsProvider: productsProvider).toStringAsFixed(2)}\$",
                     color: Colors.blue,
                     weight: FontWeight.bold,
                   )

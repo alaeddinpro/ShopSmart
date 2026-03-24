@@ -25,8 +25,9 @@ class ProductsProvider with ChangeNotifier {
     return categoryList;
   }
 
-  List<ProductsModel> searchQuery({required String searchtext}) {
-    List<ProductsModel> searchList = products
+  List<ProductsModel> searchQuery(
+      {required String searchtext, required List<ProductsModel> passedList}) {
+    List<ProductsModel> searchList = passedList
         .where((element) => element.productTitle.toLowerCase().contains(
               searchtext.toLowerCase(),
             ))

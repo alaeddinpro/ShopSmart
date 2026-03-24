@@ -1,6 +1,8 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:provider/provider.dart';
+import 'package:shopsmart_users/providers/viewed_provider.dart';
 import 'package:shopsmart_users/screens/cart/bottom_checkout.dart';
 import 'package:shopsmart_users/screens/cart/cart_widget.dart';
 import 'package:shopsmart_users/services/assets_manger.dart';
@@ -13,11 +15,11 @@ class ViewedRecently extends StatelessWidget {
   const ViewedRecently({super.key});
   static const routName = "/ViewedRecentlyScreen";
 
-  final bool isBagEmpty = true;
   @override
   Widget build(BuildContext context) {
+    final viewedProvider = Provider.of<ViewedProvider>(context);
     return Scaffold(
-      body: isBagEmpty
+      body: viewedProvider.getViewedItems.isEmpty
           ? EmptyBag(
               imagePath: AssetsManager.orderbag,
               title: "No viewed product yet!",
@@ -32,28 +34,23 @@ class ViewedRecently extends StatelessWidget {
                   child: Image.asset(AssetsManager.shoppingcart),
                 ),
                 title: SubtitleText(
-                  label: "Viewed Recently (6)",
+                  label:
+                      "Viewed Recently (${viewedProvider.getViewedItems.length})",
                   size: 24,
                   weight: FontWeight.bold,
                 ),
-                actions: [
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        IconlyLight.delete,
-                        color: Colors.red,
-                      ))
-                ],
               ),
               body: DynamicHeightGridView(
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
                 builder: (context, index) {
                   return ProductWidget(
-                    productId: "",
+                    productId: viewedProvider.getViewedItems.values
+                        .toList()[index]
+                        .productId,
                   );
                 },
-                itemCount: 100,
+                itemCount: viewedProvider.getViewedItems.length,
                 crossAxisCount: 2,
               ),
             ),

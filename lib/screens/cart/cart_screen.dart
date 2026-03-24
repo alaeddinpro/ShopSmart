@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_users/screens/cart/bottom_checkout.dart';
 import 'package:shopsmart_users/screens/cart/cart_widget.dart';
 import 'package:shopsmart_users/services/assets_manger.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
-
+import '../../providers/cart_provider.dart';
 import '../../widgets/empty_bag.dart';
 
 class CartScreen extends StatelessWidget {
@@ -12,8 +14,12 @@ class CartScreen extends StatelessWidget {
   final bool isBagEmpty = false;
   @override
   Widget build(BuildContext context) {
+    // final productsProvider = Provider.of<ProductsProvider>(context);
+
+    final cartProvider = Provider.of<CartProvider>(context);
+
     return Scaffold(
-      body: isBagEmpty
+      body: cartProvider.getCartItems.isEmpty
           ? EmptyBag(
               imagePath: AssetsManager.shoppingbasket,
               title: "Your cart is empty",
@@ -28,24 +34,40 @@ class CartScreen extends StatelessWidget {
                   child: Image.asset(AssetsManager.shoppingcart),
                 ),
                 title: SubtitleText(
-                  label: "Cart",
+                  label: "Cart (${cartProvider.getCartItems.length})",
                   size: 24,
                   weight: FontWeight.bold,
                 ),
                 actions: [
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        MyAppFunctions.showErrorOrWarningDialog(
+                            isError: false,
+                            context: context,
+                            fct: cartProvider.clearLocalCart,
+                            title: "Clear Cart");
+                      },
                       icon: const Icon(
-                        IconlyLight.delete,
+                        IconlyBold.delete,
                         color: Colors.red,
                       ))
                 ],
               ),
-              body: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return CartWidget();
-                },
+              body: Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: cartProvider.getCartItems.length,
+                      itemBuilder: (context, index) {
+                        return ChangeNotifierProvider.value(
+                            value: cartProvider.getCartItems.values
+                                .toList()[index],
+                            child: CartWidget());
+                      },
+                    ),
+                  ),
+                  SizedBox(height: kBottomNavigationBarHeight),
+                ],
               ),
               bottomNavigationBar: Cartbottomsheetwidget(),
             ),

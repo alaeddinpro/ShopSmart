@@ -1,6 +1,9 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_constants.dart';
+import 'package:shopsmart_users/providers/cart_provider.dart';
+import 'package:shopsmart_users/providers/products_provider.dart';
 
 import 'package:shopsmart_users/services/assets_manger.dart';
 import 'package:shopsmart_users/widgets/appnametextwidget.dart';
@@ -14,7 +17,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+    final productsProvider = Provider.of<ProductsProvider>(context);
     return Scaffold(
         appBar: AppBar(
           leading: Padding(
@@ -56,7 +59,9 @@ class HomeScreen extends StatelessWidget {
                     itemCount: 4,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return LatestArrival();
+                      return ChangeNotifierProvider.value(
+                          value: productsProvider.getProducts.toList()[index],
+                          child: LatestArrival());
                     }),
               ),
               SubtitleText(label: "Categories", weight: FontWeight.bold),
