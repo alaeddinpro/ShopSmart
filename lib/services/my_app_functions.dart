@@ -29,6 +29,7 @@ class MyAppFunctions {
                 SubtitleText(
                   label: title,
                   size: 14,
+                  maxLines: 3,
                   weight: FontWeight.w600,
                 ),
                 SizedBox(

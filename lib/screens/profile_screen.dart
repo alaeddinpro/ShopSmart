@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +13,16 @@ import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
 import '../providers/theme_provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -158,26 +167,34 @@ class ProfileScreen extends StatelessWidget {
           Center(
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: user == null ? Colors.green : Colors.red,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
               onPressed: () async {
-                MyAppFunctions.showErrorOrWarningDialog(
-                    context: context,
-                    fct: () {
-                      Navigator.pushNamed(context, LoginScreen.routName);
-                    },
-                    title: "Are you sure you want sign out",
-                    isError: false);
+                if (user == null) {
+                  Navigator.pushNamed(context, LoginScreen.routName);
+                } else {
+                  MyAppFunctions.showErrorOrWarningDialog(
+                      context: context,
+                      fct: () async {
+                        await FirebaseAuth.instance.signOut();
+                        if (!mounted) {
+                          return;
+                        }
+                        Navigator.pushNamed(context, LoginScreen.routName);
+                      },
+                      title: "Are you sure you want sign out",
+                      isError: false);
+                }
               },
               label: Text(
-                "Logout",
+                user == null ? "Login" : "Logout",
                 style: TextStyle(color: Colors.white),
               ),
               icon: Icon(
-                IconlyLight.logout,
+                user == null ? IconlyLight.login : IconlyLight.logout,
                 color: Colors.white,
               ),
             ),
