@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_admin/screens/edit_upload_product.dart';
@@ -10,6 +11,8 @@ import 'screens/inner_screen/orders/orders_screen.dart';
 import 'screens/search_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
   runApp(const MyApp());
 }
 
