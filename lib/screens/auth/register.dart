@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shopsmart_users/consts/app_constants.dart';
 import 'package:shopsmart_users/consts/validator.dart';
 import 'package:shopsmart_users/root_screen.dart';
 import 'package:shopsmart_users/screens/auth/login.dart';
@@ -11,6 +16,7 @@ import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/appnametextwidget.dart';
 import 'package:shopsmart_users/widgets/auth/image_picker.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -34,6 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? _pickedImage;
   bool isloading = false;
   final auth = FirebaseAuth.instance;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -64,9 +71,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  Future<String> uploadImage() async {
+    final url = Uri.parse(
+        "https://api.cloudinary.com/v1_1/${AppConstants.cloudName}/image/upload");
+    final request = http.MultipartRequest("POST", url)
+      ..fields["upload_preset"] = AppConstants.uploadPreset
+      ..files
+          .add(await http.MultipartFile.fromPath("file", _pickedImage!.path));
+    final response = await request.send();
+    print("STATUS CODE: ${response.statusCode}");
+    print("IMAGE PATH: ${_pickedImage!.path}");
+    if (response.statusCode != 200) {
+      throw Exception("فشل رفع الصورة");
+    }
+    final responeData = await response.stream.bytesToString();
+    final jsonResponse = jsonDecode(responeData);
+    return jsonResponse['secure_url'];
+  }
+
   Future<void> _regFct() async {
     final isValid = _fromkey.currentState!.validate();
     FocusScope.of(context).unfocus();
+    if (_pickedImage == null) {
+      MyAppFunctions.showErrorOrWarningDialog(
+          context: context, title: "Please pick an image", fct: () {});
+      return;
+    }
     if (isValid) {
       try {
         setState(() {
@@ -75,6 +105,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await auth.createUserWithEmailAndPassword(
             email: _emailcontroller.text.trim(),
             password: _passwordcontroller.text.trim());
+
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(auth.currentUser!.uid)
+            .set({
+          "userId": auth.currentUser!.uid,
+          "userName": _namecontroller.text.trim(),
+          "userImage": await uploadImage(),
+          "userEmail": _emailcontroller.text.trim(),
+          "createdAt": Timestamp.now(),
+          "userCart": [],
+          "userwish": [],
+        });
         Fluttertoast.showToast(
           msg: "Account created successfully",
           toastLength: Toast.LENGTH_SHORT,

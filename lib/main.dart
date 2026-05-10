@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/theme_data.dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
+import 'package:shopsmart_users/providers/order_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/providers/user_provider.dart';
 import 'package:shopsmart_users/providers/viewed_provider.dart';
 import 'package:shopsmart_users/providers/wishlist_provider.dart';
 import 'package:shopsmart_users/root_screen.dart';
@@ -55,6 +57,8 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider(create: (_) => CartProvider()),
               ChangeNotifierProvider(create: (_) => WishlistProvider()),
               ChangeNotifierProvider(create: (_) => ViewedProvider()),
+              ChangeNotifierProvider(create: (_) => UserProvider()),
+              ChangeNotifierProvider(create: (_) => OrderProvider()),
             ],
             child: Consumer<ThemeProvider>(
               builder: (context, themeProvider, child) {

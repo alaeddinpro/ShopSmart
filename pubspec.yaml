@@ -41,6 +41,7 @@ dependencies:
   flutter_iconly: ^1.0.2
   fluttertoast: ^9.0.0
   google_sign_in: ^6.2.1
+  http: ^1.6.0
   image_picker: ^1.2.1
   ionicons: ^0.2.2
   provider: ^6.1.5+1

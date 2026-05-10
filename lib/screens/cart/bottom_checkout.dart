@@ -6,8 +6,8 @@ import '../../providers/cart_provider.dart';
 import '../../providers/products_provider.dart';
 
 class Cartbottomsheetwidget extends StatelessWidget {
-  const Cartbottomsheetwidget({super.key});
-
+  const Cartbottomsheetwidget({super.key, required this.function});
+  final Function function;
   @override
   Widget build(BuildContext context) {
     final productsProvider = Provider.of<ProductsProvider>(context);
@@ -42,7 +42,9 @@ class Cartbottomsheetwidget extends StatelessWidget {
               ),
               Spacer(),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await function();
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,

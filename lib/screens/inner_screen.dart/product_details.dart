@@ -5,6 +5,7 @@ import 'package:shopsmart_users/consts/app_constants.dart';
 import 'package:shopsmart_users/models/products_model..dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/appnametextwidget.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
@@ -95,14 +96,22 @@ class _ProductDetailsState extends State<ProductDetails> {
                             child: ElevatedButton.icon(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red),
-                              onPressed: () {
+                              onPressed: () async {
                                 if (cartProvider.isProductinCart(
                                     productId: getCurrentProduct.productId)) {
                                   return;
                                 }
-
-                                cartProvider.addProductToCart(
-                                    productId: getCurrentProduct.productId);
+                                try {
+                                  await cartProvider.addCartItemtofirebase(
+                                      productId: getCurrentProduct.productId,
+                                      quantity: 1,
+                                      context: context);
+                                } catch (e) {
+                                  MyAppFunctions.showErrorOrWarningDialog(
+                                      context: context,
+                                      fct: () {},
+                                      title: e.toString());
+                                }
                               },
                               label: Text(
                                 cartProvider.isProductinCart(

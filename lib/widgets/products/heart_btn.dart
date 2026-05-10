@@ -27,9 +27,20 @@ class _HeartBtnState extends State<HeartBtn> {
             color: widget.backgroundcolor, shape: BoxShape.circle),
         child: IconButton(
             style: IconButton.styleFrom(elevation: 10),
-            onPressed: () {
-              wishlistProvider.addOrRemoveFromWishlist(
-                  productId: widget.productId);
+            onPressed: () async {
+              // wishlistProvider.addOrRemoveFromWishlist(
+              //     productId: widget.productId);
+              if (wishlistProvider.getWishlistItems
+                  .containsKey(widget.productId)) {
+                await wishlistProvider.removeWishlistItemfromfirebase(
+                    wishlistId: wishlistProvider
+                        .getWishlistItems[widget.productId]!.wishlistId,
+                    productId: widget.productId);
+              } else {
+                await wishlistProvider.addWishlisttofirebase(
+                    productId: widget.productId, context: context);
+              }
+              await wishlistProvider.fetchWishlistItems();
             },
             icon: Icon(
               wishlistProvider.isProductinWishlist(productId: widget.productId)

@@ -4,7 +4,8 @@ import 'package:shopsmart_users/services/assets_manger.dart';
 class AppConstants {
   static const String ImageUrl =
       "https://m.media-amazon.com/images/G/01/zappos/2026/nicole/HP-VISNAV-MERRELL-432x540._FMwebp_.jpg";
-
+  static const cloudName = "dxwo4sw4i";
+  static const uploadPreset = "upload_images";
   static final List<String> images = [
     AssetsManager.banner1,
     AssetsManager.banner2,

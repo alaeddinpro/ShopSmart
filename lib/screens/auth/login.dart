@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -10,6 +11,7 @@ import 'package:shopsmart_users/screens/auth/forget_password.dart';
 import 'package:shopsmart_users/screens/auth/register.dart';
 import 'package:shopsmart_users/screens/loading%20manager.dart';
 import 'package:shopsmart_users/widgets/appnametextwidget.dart';
+import 'package:shopsmart_users/widgets/auth/google_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
 import '../../services/my_app_functions.dart';
@@ -66,6 +68,20 @@ class _LoginScreenState extends State<LoginScreen> {
             accessToken: googleAuth.accessToken,
             idToken: googleAuth.idToken,
           ));
+          if (authResult.additionalUserInfo!.isNewUser) {
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(auth.currentUser!.uid)
+                .set({
+              "userId": authResult.user!.uid,
+              "userName": authResult.user!.displayName,
+              "userImage": authResult.user!.photoURL,
+              "userEmail": authResult.user!.email,
+              "createdAt": Timestamp.now(),
+              "userCart": [],
+              "userwish": [],
+            });
+          }
         }
       }
       if (!mounted) {
@@ -254,24 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () async {
-                            await _googleSignIn();
-                          },
-                          label: Text(
-                            "Sign in with Google",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          icon: Icon(
-                            Ionicons.logo_google,
-                          ),
-                        ),
+                        GoogleButton(),
                         SizedBox(
                           width: 12,
                         ),

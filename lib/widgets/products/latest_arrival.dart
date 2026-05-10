@@ -6,6 +6,7 @@ import 'package:shopsmart_users/models/products_model..dart';
 import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/viewed_provider.dart';
 import 'package:shopsmart_users/screens/inner_screen.dart/product_details.dart';
+import 'package:shopsmart_users/services/my_app_functions.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
@@ -55,14 +56,22 @@ class LatestArrival extends StatelessWidget {
                           HeartBtn(productId: productModel.productId),
                           IconButton(
                             color: Colors.blueAccent,
-                            onPressed: () {
+                            onPressed: () async {
                               if (cartProvider.isProductinCart(
                                   productId: productModel.productId)) {
                                 return;
                               }
-
-                              cartProvider.addProductToCart(
-                                  productId: productModel.productId);
+                              try {
+                                await cartProvider.addCartItemtofirebase(
+                                    productId: productModel.productId,
+                                    quantity: 1,
+                                    context: context);
+                              } catch (e) {
+                                MyAppFunctions.showErrorOrWarningDialog(
+                                    context: context,
+                                    fct: () {},
+                                    title: e.toString());
+                              }
                             },
                             icon: Icon(
                               cartProvider.isProductinCart(

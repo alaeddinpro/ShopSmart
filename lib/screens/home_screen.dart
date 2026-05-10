@@ -2,7 +2,6 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_constants.dart';
-import 'package:shopsmart_users/providers/cart_provider.dart';
 import 'package:shopsmart_users/providers/products_provider.dart';
 
 import 'package:shopsmart_users/services/assets_manger.dart';
@@ -51,18 +50,28 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-              SubtitleText(label: "Latest Arrival", weight: FontWeight.bold),
+              Visibility(
+                  visible: true,
+                  // productsProvider.getProducts.isNotEmpty,
+                  child: SubtitleText(
+                      label: "Latest Arrival", weight: FontWeight.bold)),
               SizedBox(height: 16),
-              SizedBox(
-                height: size.height * 0.2,
-                child: ListView.builder(
-                    itemCount: 4,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return ChangeNotifierProvider.value(
-                          value: productsProvider.getProducts.toList()[index],
-                          child: LatestArrival());
-                    }),
+              Visibility(
+                visible: true,
+                // productsProvider.getProducts.isNotEmpty,
+                child: SizedBox(
+                  height: size.height * 0.2,
+                  child: ListView.builder(
+                      itemCount: productsProvider.getProducts.length < 10
+                          ? productsProvider.getProducts.length
+                          : 10,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return ChangeNotifierProvider.value(
+                            value: productsProvider.getProducts.toList()[index],
+                            child: LatestArrival());
+                      }),
+                ),
               ),
               SubtitleText(label: "Categories", weight: FontWeight.bold),
               SizedBox(height: 16),

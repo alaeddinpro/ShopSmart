@@ -1,17 +1,22 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_users/consts/app_constants.dart';
+import 'package:shopsmart_users/models/order_model.dart';
+import 'package:shopsmart_users/providers/order_provider.dart';
 import 'package:shopsmart_users/screens/cart/quantity_btm_widget.dart';
 import 'package:shopsmart_users/widgets/products/heart_btn.dart';
 import 'package:shopsmart_users/widgets/subtitle_text.dart';
 
 class OrderWidget extends StatelessWidget {
-  const OrderWidget({super.key});
+  const OrderWidget({super.key, required this.orderModel});
+  final OrderModel orderModel;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final orderprovider = Provider.of<OrderProvider>(context);
     return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -20,7 +25,7 @@ class OrderWidget extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: FancyShimmerImage(
-                imageUrl: AppConstants.ImageUrl,
+                imageUrl: orderModel.imageUrl,
                 height: size.height * 0.15,
                 width: size.width * 0.3,
               ),
@@ -37,7 +42,7 @@ class OrderWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SubtitleText(label: "Product Name", size: 16),
+                      SubtitleText(label: orderModel.productId, size: 16),
                       Column(
                         children: [
                           IconButton(
@@ -55,14 +60,14 @@ class OrderWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SubtitleText(
-                        label: 'Price:16.00\$',
+                        label: "Price : ${orderModel.price}",
                         color: Colors.blue,
                       ),
                       Spacer(),
                     ],
                   ),
                   SubtitleText(
-                    label: 'Qty: 6',
+                    label: 'Qty: ${orderModel.quantity}',
                   ),
                 ],
               ),
