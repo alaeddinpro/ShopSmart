@@ -296,8 +296,16 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: "direct main"
+    description:
+      name: fluttertoast
+      sha256: "144ddd74d49c865eba47abe31cbc746c7b311c82d6c32e571fd73c4264b740e2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "87721a4a50b19c7f1d49001e51409bddc46303966ce89a65af4f4e6004896412"
@@ -312,6 +320,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  iconly:
+    dependency: "direct main"
+    description:
+      name: iconly
+      sha256: "22f16dd28984d232891299ead9d9b75ae5a32b4d9cdf63e8e574f1ceb11dcbd9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   image_picker:
     dependency: "direct main"
     description:
@@ -718,7 +734,7 @@ packages:
     source: hosted
     version: "1.4.0"
   uuid:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: uuid
       sha256: "1fef9e8e11e2991bb773070d4656b7bd5d850967a2456cfc83cf47925ba79489"

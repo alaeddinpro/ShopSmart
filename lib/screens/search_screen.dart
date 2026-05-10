@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
+import 'package:shopsmart_admin/widgets/subtitle_text.dart';
 
 import '../models/product_model.dart';
 import '../providers/products_provider.dart';
@@ -31,15 +33,15 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  List<ProductModel> productListSearch = [];
+  List<ProductsModel> productListSearch = [];
   @override
   Widget build(BuildContext context) {
     final productsProvider = Provider.of<ProductsProvider>(context);
     String? passedCategory =
         ModalRoute.of(context)!.settings.arguments as String?;
-    List<ProductModel> productList = passedCategory == null
+    List<ProductsModel> productList = passedCategory == null
         ? productsProvider.products
-        : productsProvider.findByCategory(categoryName: passedCategory);
+        : productsProvider.findbycategory(categoryName: passedCategory);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -54,70 +56,85 @@ class _SearchScreenState extends State<SearchScreen> {
           // ),
           title: TitlesTextWidget(label: passedCategory ?? "Search products"),
         ),
-        body: productList.isEmpty
-            ? const Center(child: TitlesTextWidget(label: "No product found"))
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 15.0),
-                    TextField(
-                      controller: searchTextController,
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        prefixIcon: const Icon(Icons.search),
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            // setState(() {
-                            FocusScope.of(context).unfocus();
-                            searchTextController.clear();
-                            // });
-                          },
-                          child: const Icon(Icons.clear, color: Colors.red),
-                        ),
-                      ),
-                      // onChanged: (value) {
-                      //   setState(() {
-                      //     productListSearch = productsProvider.searchQuery(
-                      //         searchText: searchTextController.text);
-                      //   });
-                      // },
-                      onSubmitted: (value) {
-                        setState(() {
-                          productListSearch = productsProvider.searchQuery(
-                            searchText: searchTextController.text,
-                            passedList: productList,
-                          );
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 15.0),
-                    if (searchTextController.text.isNotEmpty &&
-                        productListSearch.isEmpty) ...[
-                      const Center(
-                        child: TitlesTextWidget(label: "No products found"),
-                      ),
-                    ],
-                    Expanded(
-                      child: DynamicHeightGridView(
-                        itemCount: searchTextController.text.isNotEmpty
-                            ? productListSearch.length
-                            : productList.length,
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 12,
-                        crossAxisSpacing: 12,
-                        builder: (context, index) {
-                          return ProductWidget(
-                            productId: searchTextController.text.isNotEmpty
-                                ? productListSearch[index].productId
-                                : productList[index].productId,
-                          );
+        body: StreamBuilder<List<ProductsModel>>(
+          stream: productsProvider.fetchProductsStream(),
+          builder: (context, asyncSnapshot) {
+            if (asyncSnapshot.hasError) {
+              return Center(
+                child: SelectableText(asyncSnapshot.error.toString()),
+              );
+            }
+            if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (asyncSnapshot.data == null) {
+              return Center(
+                child: SubtitleTextWidget(label: "No Product found"),
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: searchTextController,
+                    decoration: InputDecoration(
+                      hintText: "Search",
+                      prefixIcon: Icon(IconlyLight.search),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          searchTextController.clear();
                         },
+                        child: Icon(Icons.clear),
                       ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        productListSearch = productsProvider.searchQuery(
+                          searchtext: searchTextController.text,
+                          passedList: productList,
+                        );
+                      });
+                    },
+                    onSubmitted: (value) {
+                      setState(() {
+                        productListSearch = productsProvider.searchQuery(
+                          searchtext: searchTextController.text,
+                          passedList: productList,
+                        );
+                      });
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  if (searchTextController.text.isNotEmpty &&
+                      productListSearch.isEmpty) ...[
+                    const Center(
+                      child: SubtitleTextWidget(label: "No Products found"),
                     ),
                   ],
-                ),
+                  Expanded(
+                    child: DynamicHeightGridView(
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      builder: (context, index) {
+                        return ProductWidget(
+                          productId: searchTextController.text.isNotEmpty
+                              ? productListSearch[index].productId
+                              : productList[index].productId,
+                        );
+                      },
+                      itemCount: searchTextController.text.isNotEmpty
+                          ? productListSearch.length
+                          : productList.length,
+                      crossAxisCount: 2,
+                    ),
+                  ),
+                ],
               ),
+            );
+          },
+        ),
       ),
     );
   }
